@@ -8,9 +8,10 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-var testAccessToken = "test-access-token"
-
 func TestUnitUserToken(t *testing.T) {
+
+	var testDomain = "www.test.com"
+	var testAccessToken = "test-access-token"
 
 	Convey("GetUserAuthToken", t, func() {
 		Convey("returns cookie value if value is set", func() {

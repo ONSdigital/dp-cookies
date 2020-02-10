@@ -8,9 +8,10 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-var testLang = "en"
-
 func TestUnitLocale(t *testing.T) {
+
+	var testDomain = "www.test.com"
+	var testLang = "en"
 
 	Convey("GetLang", t, func() {
 		Convey("returns cookie value if value is set", func() {

@@ -8,9 +8,10 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-var testEncodedCookieValue = "%7B%22essential%22%3Atrue%2C%22usage%22%3Atrue%7D"
-
 func TestUnitPolicy(t *testing.T) {
+
+	var testDomain = "www.test.com"
+	var testEncodedCookieValue = "%7B%22essential%22%3Atrue%2C%22usage%22%3Atrue%7D"
 
 	Convey("GetCookiePreferences", t, func() {
 		Convey("returns false for prefrences set if cookie isn't set, and default policy if no cookies set", func() {

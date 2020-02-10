@@ -8,11 +8,11 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-var testDomain = "www.test.com"
-var testCookie = "test_cookie"
-var testValue = "test-value"
-
 func TestUnitSetCookie(t *testing.T) {
+
+	var testDomain = "www.test.com"
+	var testCookie = "test_cookie"
+	var testValue = "test-value"
 
 	Convey("SetUserAuthToken sets correct cookie", t, func() {
 		rec := httptest.NewRecorder()

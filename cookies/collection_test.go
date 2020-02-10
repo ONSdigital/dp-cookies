@@ -8,9 +8,10 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-var testCollectionID = "test-123456789"
-
 func TestUnitCollection(t *testing.T) {
+
+	var testDomain = "www.test.com"
+	var testCollectionID = "test-123456789"
 
 	Convey("GetUserAuthToken", t, func() {
 		Convey("returns cookie value if value is set", func() {
