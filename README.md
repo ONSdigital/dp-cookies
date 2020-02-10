@@ -1,2 +1,42 @@
 # dp-cookie
-Golang library for accessing specific cookies
+Golang library for setting/getting specific cookies
+
+## Setting a cookie using dp-cookies library
+
+```
+package handler
+
+import (
+    ...
+    "github.com/ONSdigital/dp-cookies/cookies"
+    ...
+)
+
+// Set language/locale cookie
+
+func myHandler(w http.ResponseWriter, req *http.Request, ...) {
+    ...
+    cookies.SetUserAuthToken(w, userAuthToken, "www.domain.com")
+    ...
+}
+```
+
+## Getting a cookie using dp-cookies library
+
+```
+package handler
+
+import (
+    ...
+    "github.com/ONSdigital/dp-cookies/cookies"
+    ...
+)
+
+// Set language/locale cookie
+
+func myHandler(w http.ResponseWriter, req *http.Request, ...) {
+    ...
+    token, err := cookies.GetUserAuthToken(req)
+    ...
+}
+```
