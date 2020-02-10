@@ -5,11 +5,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/davecgh/go-spew/spew"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-var testDomain = "www.test.com"
 var testAccessToken = "test-access-token"
 
 func TestUnitUserToken(t *testing.T) {
@@ -33,7 +31,6 @@ func TestUnitUserToken(t *testing.T) {
 		rec := httptest.NewRecorder()
 		SetUserAuthToken(rec, testAccessToken, testDomain)
 		cookie := rec.Result().Cookies()[0]
-		spew.Dump(cookie)
 		So(cookie.Value, ShouldEqual, testAccessToken)
 		So(cookie.Path, ShouldEqual, "/")
 		So(cookie.Domain, ShouldEqual, testDomain)
