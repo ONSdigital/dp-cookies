@@ -7,8 +7,8 @@ import (
 	"strconv"
 )
 
-// Response is a combination of cookie policy and whether they have be set by user
-type Response struct {
+// PreferencesResponse is a combination of cookie policy and whether they have be set by user
+type PreferencesResponse struct {
 	IsPreferenceSet bool
 	Policy          Policy
 }
@@ -25,18 +25,18 @@ var defaultPolicy = Policy{
 }
 
 // GetCookiePreferences returns a struct with all cookie preferences
-func GetCookiePreferences(req *http.Request) Response {
+func GetCookiePreferences(req *http.Request) PreferencesResponse {
 	isPreferenceSet := getPreferencesIsSet(req)
 	cookiePolicy := getPolicy(req)
-	return Response{
+	return PreferencesResponse{
 		IsPreferenceSet: isPreferenceSet,
 		Policy:          cookiePolicy,
 	}
 }
 
 // SetPreferenceIsSet sets a cookie to record a user has set cookie preferences
-func SetPreferenceIsSet(w http.ResponseWriter) {
-	set(w, cookiesPreferencesSetCookieKey, "true")
+func SetPreferenceIsSet(w http.ResponseWriter, domain string) {
+	set(w, cookiesPreferencesSetCookieKey, "true", domain, 31622400)
 }
 
 func getPreferencesIsSet(req *http.Request) bool {
@@ -54,12 +54,12 @@ func getPreferencesIsSet(req *http.Request) bool {
 }
 
 // SetPolicy sets a cookie with the users preferences, or sets default preferences on error
-func SetPolicy(w http.ResponseWriter, policy Policy) {
+func SetPolicy(w http.ResponseWriter, policy Policy, domain string) {
 	b, err := json.Marshal(policy)
 	if err != nil {
 		b, err = json.Marshal(defaultPolicy)
 	}
-	set(w, cookiesPolicyCookieKey, string(b))
+	set(w, cookiesPolicyCookieKey, string(b), domain, 31622400)
 }
 
 func getPolicy(req *http.Request) Policy {

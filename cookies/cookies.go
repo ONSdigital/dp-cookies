@@ -1,8 +1,9 @@
 package cookies
 
-import "net/http"
-
-import "net/url"
+import (
+	"net/http"
+	"net/url"
+)
 
 const (
 	// name of cookie used to determine the user selected cookie preferences
@@ -21,12 +22,17 @@ const (
 	collectionIDCookieKey = "collection"
 )
 
-func set(w http.ResponseWriter, name, value string) {
+func set(w http.ResponseWriter, name, value, domain string, maxAge int) {
 	encodedValue := url.QueryEscape(value)
 	cookie := &http.Cookie{
 		Name:     name,
 		Value:    encodedValue,
+		Path:     "/",
+		Domain:   domain,
 		HttpOnly: false,
+		Secure:   true,
+		MaxAge:   maxAge,
+		SameSite: http.SameSiteLaxMode,
 	}
 	http.SetCookie(w, cookie)
 }
