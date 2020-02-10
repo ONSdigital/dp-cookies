@@ -12,7 +12,7 @@ import (
 var testDomain = "www.test.com"
 var testAccessToken = "test-access-token"
 
-func TestUnitGetUserAuthToken(t *testing.T) {
+func TestUnitUserToken(t *testing.T) {
 
 	Convey("GetUserAuthToken", t, func() {
 		Convey("returns cookie value if value is set", func() {
@@ -41,5 +41,4 @@ func TestUnitGetUserAuthToken(t *testing.T) {
 		So(cookie.Secure, ShouldBeTrue)
 		So(cookie.SameSite, ShouldEqual, http.SameSiteLaxMode)
 	})
-
 }
