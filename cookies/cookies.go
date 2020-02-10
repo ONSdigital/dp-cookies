@@ -6,20 +6,26 @@ import (
 )
 
 const (
-	// name of cookie used to determine the user selected cookie preferences
+	// cookiesPolicyCookieKey is the  name of cookie used to determine the user selected cookie preferences
 	cookiesPolicyCookieKey = "cookies_policy"
 
-	// name of cookie set once a user has made a choice preference decision
+	// cookiesPreferencesSetCookieKey is the name of cookie set once a user has made a choice preference decision
 	cookiesPreferencesSetCookieKey = "cookies_preferences_set"
 
-	// name of cookie with user choosen language of website
+	// localeCookieKey is the name of cookie with user choosen language of website
 	localeCookieKey = "lang"
 
-	// name of cookie set by Florence to store users access token
+	// florenceCookieKey is the name of cookie set by Florence to store users access token
 	florenceCookieKey = "access_token"
 
-	// name of cookie set by Florence to store currenct active collection
+	// collectionIDCookieKey is the name of cookie set by Florence to store currenct active collection
 	collectionIDCookieKey = "collection"
+
+	// maxAgeOneYear is length of time to expire a cookie in a year
+	maxAgeOneYear = 31622400
+
+	// maxAgeBrowserSession is length of time to expire cookie on browser close
+	maxAgeBrowserSession = -1
 )
 
 func set(w http.ResponseWriter, name, value, domain string, maxAge int) {
