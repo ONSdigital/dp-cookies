@@ -7,7 +7,7 @@ import (
 
 // SetCollection sets a cookie containing collection ID
 func SetCollection(w http.ResponseWriter, value, domain string) {
-	set(w, collectionIDCookieKey, value, domain, -1)
+	set(w, collectionIDCookieKey, value, domain, maxAgeBrowserSession)
 }
 
 // GetCollection reads collection_id cookie and returns it's value

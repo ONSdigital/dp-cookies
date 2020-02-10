@@ -34,7 +34,7 @@ func TestUnitUserToken(t *testing.T) {
 		So(cookie.Value, ShouldEqual, testAccessToken)
 		So(cookie.Path, ShouldEqual, "/")
 		So(cookie.Domain, ShouldEqual, testDomain)
-		So(cookie.MaxAge, ShouldBeLessThanOrEqualTo, 0)
+		So(cookie.MaxAge, ShouldEqual, maxAgeBrowserSession)
 		So(cookie.Secure, ShouldBeTrue)
 		So(cookie.SameSite, ShouldEqual, http.SameSiteLaxMode)
 	})

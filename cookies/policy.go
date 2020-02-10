@@ -36,7 +36,7 @@ func GetCookiePreferences(req *http.Request) PreferencesResponse {
 
 // SetPreferenceIsSet sets a cookie to record a user has set cookie preferences
 func SetPreferenceIsSet(w http.ResponseWriter, domain string) {
-	set(w, cookiesPreferencesSetCookieKey, "true", domain, 31622400)
+	set(w, cookiesPreferencesSetCookieKey, "true", domain, maxAgeOneYear)
 }
 
 func getPreferencesIsSet(req *http.Request) bool {
@@ -59,7 +59,7 @@ func SetPolicy(w http.ResponseWriter, policy Policy, domain string) {
 	if err != nil {
 		b, err = json.Marshal(defaultPolicy)
 	}
-	set(w, cookiesPolicyCookieKey, string(b), domain, 31622400)
+	set(w, cookiesPolicyCookieKey, string(b), domain, maxAgeOneYear)
 }
 
 func getPolicy(req *http.Request) Policy {
