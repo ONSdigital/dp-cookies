@@ -14,8 +14,8 @@ var policy = cookies.Policy{
 
 func main() {
 	http.HandleFunc("/set-cookies", func(w http.ResponseWriter, r *http.Request) {
-		cookies.SetPolicy(w, policy)
-		cookies.SetPreferenceIsSet(w)
+		cookies.SetPolicy(w, policy, "www.test.com")
+		cookies.SetPreferenceIsSet(w, "www.test.com")
 	})
 
 	http.HandleFunc("/cookies", func(w http.ResponseWriter, r *http.Request) {
