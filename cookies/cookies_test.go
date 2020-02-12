@@ -8,13 +8,13 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-func TestUnitSetCookie(t *testing.T) {
+func TestUnitCookie(t *testing.T) {
 
 	var testDomain = "www.test.com"
 	var testCookie = "test_cookie"
 	var testValue = "test-value"
 
-	Convey("SetUserAuthToken sets correct cookie", t, func() {
+	Convey("Set sets correct cookie", t, func() {
 		rec := httptest.NewRecorder()
 		set(rec, testCookie, testValue, testDomain, 12)
 		cookie := rec.Result().Cookies()[0]
@@ -25,4 +25,20 @@ func TestUnitSetCookie(t *testing.T) {
 		So(cookie.Secure, ShouldBeTrue)
 		So(cookie.SameSite, ShouldEqual, http.SameSiteLaxMode)
 	})
+
+	Convey("Get", t, func() {
+		Convey("returns cookie value if value is set", func() {
+			req := httptest.NewRequest("GET", "/", nil)
+			req.AddCookie(&http.Cookie{Name: "test-cookie", Value: "test-value"})
+			cookie, _ := get(req, "test-cookie")
+			So(cookie, ShouldEqual, "test-value")
+		})
+
+		Convey("returns error if no cookie is set", func() {
+			req := httptest.NewRequest("GET", "/", nil)
+			_, err := GetLang(req)
+			So(err, ShouldNotBeNil)
+		})
+	})
+
 }
