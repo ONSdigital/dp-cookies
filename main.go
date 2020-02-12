@@ -23,5 +23,6 @@ func main() {
 		w.Write([]byte(fmt.Sprintf("%+v \n", cookiesResponse)))
 	})
 
+	fmt.Println("Running on port 22888")
 	http.ListenAndServe(":22888", nil)
 }
