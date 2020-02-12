@@ -1,6 +1,7 @@
 package cookies
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 )
@@ -41,4 +42,12 @@ func set(w http.ResponseWriter, name, value, domain string, maxAge int) {
 		SameSite: http.SameSiteLaxMode,
 	}
 	http.SetCookie(w, cookie)
+}
+
+func get(req *http.Request, name string) (string, error) {
+	cookie, err := req.Cookie(name)
+	if err != nil {
+		return "", fmt.Errorf("could not find cookie named '%v'", localeCookieKey)
+	}
+	return cookie.Value, nil
 }
