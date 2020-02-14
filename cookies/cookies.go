@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
+	"strconv"
 )
 
 const (
@@ -29,6 +31,17 @@ const (
 	maxAgeBrowserSession = 0
 )
 
+var isRunningLocalDev bool
+
+func init() {
+	IsRunningLocal := os.Getenv("IS_LOCAL")
+	var err error
+	isRunningLocalDev, err = strconv.ParseBool(IsRunningLocal)
+	if err != nil {
+		isRunningLocalDev = false
+	}
+}
+
 func set(w http.ResponseWriter, name, value, domain string, maxAge int) {
 	encodedValue := url.QueryEscape(value)
 	cookie := &http.Cookie{
@@ -37,7 +50,7 @@ func set(w http.ResponseWriter, name, value, domain string, maxAge int) {
 		Path:     "/",
 		Domain:   domain,
 		HttpOnly: false,
-		Secure:   true,
+		Secure:   isRunningLocalDev,
 		MaxAge:   maxAge,
 		SameSite: http.SameSiteLaxMode,
 	}
