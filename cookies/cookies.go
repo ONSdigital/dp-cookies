@@ -34,7 +34,7 @@ const (
 var isRunningLocalDev bool
 
 func init() {
-	IsRunningLocal := os.Getenv("IS_LOCAL")
+	IsRunningLocal := os.Getenv("DP_IS_LOCAL_ENV")
 	var err error
 	isRunningLocalDev, err = strconv.ParseBool(IsRunningLocal)
 	if err != nil {
