@@ -26,7 +26,7 @@ const (
 	maxAgeOneYear = 31622400
 
 	// maxAgeBrowserSession is length of time to expire cookie on browser close
-	maxAgeBrowserSession = -1
+	maxAgeBrowserSession = 0
 )
 
 func set(w http.ResponseWriter, name, value, domain string, maxAge int) {
