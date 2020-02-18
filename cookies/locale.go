@@ -1,7 +1,6 @@
 package cookies
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -12,9 +11,5 @@ func SetLang(w http.ResponseWriter, lang, domain string) {
 
 // GetLang reads lang cookie and returns it's value
 func GetLang(req *http.Request) (string, error) {
-	userAccessToken, err := req.Cookie(localeCookieKey)
-	if err != nil {
-		return "", fmt.Errorf("could not find %v cookie", localeCookieKey)
-	}
-	return userAccessToken.Value, nil
+	return get(req, localeCookieKey)
 }

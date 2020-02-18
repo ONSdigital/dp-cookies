@@ -1,7 +1,6 @@
 package cookies
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -12,9 +11,5 @@ func SetCollection(w http.ResponseWriter, value, domain string) {
 
 // GetCollection reads collection_id cookie and returns it's value
 func GetCollection(req *http.Request) (string, error) {
-	collectionID, err := req.Cookie(collectionIDCookieKey)
-	if err != nil {
-		return "", fmt.Errorf("could not find %v cookie", collectionIDCookieKey)
-	}
-	return collectionID.Value, nil
+	return get(req, collectionIDCookieKey)
 }

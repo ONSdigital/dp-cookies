@@ -1,8 +1,11 @@
 package cookies
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
+	"os"
+	"strconv"
 )
 
 const (
@@ -25,8 +28,19 @@ const (
 	maxAgeOneYear = 31622400
 
 	// maxAgeBrowserSession is length of time to expire cookie on browser close
-	maxAgeBrowserSession = -1
+	maxAgeBrowserSession = 0
 )
+
+var isRunningLocalDev bool
+
+func init() {
+	IsRunningLocal := os.Getenv("DP_IS_LOCAL_ENV")
+	var err error
+	isRunningLocalDev, err = strconv.ParseBool(IsRunningLocal)
+	if err != nil {
+		isRunningLocalDev = false
+	}
+}
 
 func set(w http.ResponseWriter, name, value, domain string, maxAge int) {
 	encodedValue := url.QueryEscape(value)
@@ -36,9 +50,17 @@ func set(w http.ResponseWriter, name, value, domain string, maxAge int) {
 		Path:     "/",
 		Domain:   domain,
 		HttpOnly: false,
-		Secure:   true,
+		Secure:   isRunningLocalDev,
 		MaxAge:   maxAge,
 		SameSite: http.SameSiteLaxMode,
 	}
 	http.SetCookie(w, cookie)
+}
+
+func get(req *http.Request, name string) (string, error) {
+	cookie, err := req.Cookie(name)
+	if err != nil {
+		return "", fmt.Errorf("could not find cookie named '%v'", name)
+	}
+	return cookie.Value, nil
 }

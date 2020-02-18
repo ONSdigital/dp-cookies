@@ -12,7 +12,7 @@ import (
     ...
 )
 
-// Set language/locale cookie
+// Set user auth token cookie
 
 func myHandler(w http.ResponseWriter, req *http.Request, ...) {
     ...
@@ -32,7 +32,7 @@ import (
     ...
 )
 
-// Set language/locale cookie
+// Get user auth token value from cookie
 
 func myHandler(w http.ResponseWriter, req *http.Request, ...) {
     ...
