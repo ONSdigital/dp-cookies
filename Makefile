@@ -5,3 +5,11 @@ debug:
 .PHONY: test
 test: 
 	go test -race -cover ./...
+
+.PHONY: audit
+audit:
+	go list -m all | nancy sleuth
+	
+.PHONY: build	
+build:
+	go build ./...
