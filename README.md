@@ -1,6 +1,8 @@
 # dp-cookie
 Golang library for setting/getting specific cookies
 
+NOTE: If testing this library you will need to set the following local environmental variable LIBRARY_TEST:=true, or run `make test`.
+
 ## Setting a cookie using dp-cookies library
 
 ```

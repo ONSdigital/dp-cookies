@@ -10,7 +10,7 @@ import (
 
 func TestUnitCollection(t *testing.T) {
 
-	var testDomain = "www.test.com"
+	var testDomain = "www.ons.gov.uk"
 	var testCollectionID = "test-123456789"
 
 	Convey("GetUserAuthToken", t, func() {
@@ -36,6 +36,9 @@ func TestUnitCollection(t *testing.T) {
 		So(cookie.Path, ShouldEqual, "/")
 		So(cookie.Domain, ShouldEqual, testDomain)
 		So(cookie.MaxAge, ShouldEqual, maxAgeBrowserSession)
+		if cookie.Secure == false {
+			Print("Ensure Environmental Variable DP_IS_LOCAL_ENV is set to TRUE, as per cookies.init at L39")
+		}
 		So(cookie.Secure, ShouldBeTrue)
 		So(cookie.SameSite, ShouldEqual, http.SameSiteLaxMode)
 	})

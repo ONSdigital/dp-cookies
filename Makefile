@@ -1,3 +1,5 @@
+export LIBRARY_TEST:=TRUE  #Used by dp-cookies/cookies/cookies.go L37 to identify whether its running a test.
+
 .PHONY: debug
 debug:
 	go run main.go
