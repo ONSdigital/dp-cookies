@@ -5,7 +5,7 @@ debug:
 .PHONY: test
 test: 
 	#LIBRARY_TEST=TRUE is used by dp-cookies/cookies/cookies.go @ L37 to identify whether its running in a test/locally, as we don't have the means to test secure cookies.
-	LIBRARY_TEST=TRUE && go test -race -cover ./...
+	LIBRARY_TEST=TRUE go test -race -cover ./...
 
 .PHONY: audit
 audit:
