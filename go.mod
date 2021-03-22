@@ -1,6 +1,6 @@
 module github.com/ONSdigital/dp-cookies
 
-go 1.16
+go 1.12
 
 require (
 	github.com/gopherjs/gopherjs v0.0.0-20210202160940-bed99a852dfe // indirect

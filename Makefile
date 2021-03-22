@@ -1,12 +1,11 @@
-export LIBRARY_TEST:=TRUE  #Used by dp-cookies/cookies/cookies.go L37 to identify whether its running a test.
-
 .PHONY: debug
 debug:
 	go run main.go
 
 .PHONY: test
 test: 
-	go test -race -cover ./...
+	#LIBRARY_TEST=TRUE is used by dp-cookies/cookies/cookies.go @ L37 to identify whether its running in a test/locally, as we don't have the means to test secure cookies.
+	LIBRARY_TEST=TRUE && go test -race -cover ./...
 
 .PHONY: audit
 audit:
