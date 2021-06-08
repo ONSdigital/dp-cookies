@@ -1,3 +1,5 @@
+ SHELL=bash
+
 .PHONY: debug
 debug:
 	go run main.go
