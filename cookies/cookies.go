@@ -34,6 +34,9 @@ const (
 var isRunningLocalDev bool
 
 func init() {
+	// Set a LIBRARY_TEST environment variable to TRUE when running locally or testing.
+	// Concourse test will run 'make debug' which includes setting this variable automatically.
+	// Note, this is required as we don't have the means to test secure cookies.
 	IsRunningLocal := os.Getenv("LIBRARY_TEST")
 	var err error
 	isRunningLocalDev, err = strconv.ParseBool(IsRunningLocal)
