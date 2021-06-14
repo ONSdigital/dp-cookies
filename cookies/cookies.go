@@ -21,6 +21,12 @@ const (
 	// florenceCookieKey is the name of cookie set by Florence to store users access token
 	florenceCookieKey = "access_token"
 
+	// idCookieKey is the name of cookie set by Florence to store users id token used for refreshing an access_token
+	idCookieKey = "id_token"
+
+	// idCookieKey is the name of cookie set by Florence to store users refresh token used for refreshing an access_token
+	refreshCookieKey = "refresh_token"
+
 	// collectionIDCookieKey is the name of cookie set by Florence to store currenct active collection
 	collectionIDCookieKey = "collection"
 
