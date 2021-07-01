@@ -3,6 +3,7 @@ package cookies
 import (
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -30,13 +31,21 @@ func TestUnitUserToken(t *testing.T) {
 
 	Convey("SetUserAuthToken sets correct cookie", t, func() {
 		rec := httptest.NewRecorder()
+
+		correctCookie := &http.Cookie{
+			Name:     florenceCookieKey,
+			Value:    url.QueryEscape(testAccessToken),
+			Path:     "/",
+			Domain:   testDomain,
+			HttpOnly: true,
+			Secure:   true,
+			MaxAge:   maxAgeBrowserSession,
+			SameSite: http.SameSiteStrictMode,
+			Raw:      "access_token=test-access-token; Path=/; Domain=www.test.com; HttpOnly; Secure; SameSite=Strict",
+		}
+
 		SetUserAuthToken(rec, testAccessToken, testDomain)
 		cookie := rec.Result().Cookies()[0]
-		So(cookie.Value, ShouldEqual, testAccessToken)
-		So(cookie.Path, ShouldEqual, "/")
-		So(cookie.Domain, ShouldEqual, testDomain)
-		So(cookie.MaxAge, ShouldEqual, maxAgeBrowserSession)
-		So(cookie.Secure, ShouldBeTrue)
-		So(cookie.SameSite, ShouldEqual, http.SameSiteLaxMode)
+		So(cookie, ShouldResemble, correctCookie)
 	})
 }

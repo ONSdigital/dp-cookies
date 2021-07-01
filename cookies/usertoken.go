@@ -6,7 +6,9 @@ import (
 
 // SetUserAuthToken sets a cookie containing users auth token ("access token")
 func SetUserAuthToken(w http.ResponseWriter, userAuthToken, domain string) {
-	set(w, florenceCookieKey, userAuthToken, domain, maxAgeBrowserSession)
+	path := "/"
+	httpOnly := true
+	set(w, florenceCookieKey, userAuthToken, domain, path, maxAgeBrowserSession, http.SameSiteStrictMode, httpOnly)
 }
 
 // GetUserAuthToken reads access_token  cookie and returns it's value

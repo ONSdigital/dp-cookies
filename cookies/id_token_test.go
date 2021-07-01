@@ -1,11 +1,12 @@
 package cookies
 
 import (
-"net/http"
-"net/http/httptest"
-"testing"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"testing"
 
-. "github.com/smartystreets/goconvey/convey"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestUnitIDToken(t *testing.T) {
@@ -30,14 +31,21 @@ func TestUnitIDToken(t *testing.T) {
 
 	Convey("SetIDToken sets correct cookie", t, func() {
 		rec := httptest.NewRecorder()
+
+		correctCookie := &http.Cookie{
+			Name:     idCookieKey,
+			Value:    url.QueryEscape(testIDToken),
+			Path:     "/",
+			Domain:   testDomain,
+			HttpOnly: false,
+			Secure:   true,
+			MaxAge:   maxAgeBrowserSession,
+			SameSite: http.SameSiteLaxMode,
+			Raw:      "id_token=test-id-token; Path=/; Domain=www.test.com; Secure; SameSite=Lax",
+		}
+
 		SetIDToken(rec, testIDToken, testDomain)
 		cookie := rec.Result().Cookies()[0]
-		So(cookie.Value, ShouldEqual, testIDToken)
-		So(cookie.Path, ShouldEqual, "/")
-		So(cookie.Domain, ShouldEqual, testDomain)
-		So(cookie.MaxAge, ShouldEqual, maxAgeBrowserSession)
-		So(cookie.Secure, ShouldBeTrue)
-		So(cookie.SameSite, ShouldEqual, http.SameSiteLaxMode)
+		So(cookie, ShouldResemble, correctCookie)
 	})
 }
-

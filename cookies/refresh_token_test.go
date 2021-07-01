@@ -1,9 +1,9 @@
 package cookies
 
-
 import (
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -30,15 +30,20 @@ func TestUnitRefreshToken(t *testing.T) {
 	})
 
 	Convey("SetRefreshToken sets correct cookie", t, func() {
+		correctCookie := &http.Cookie{
+			Name:     "refresh_token",
+			Value:    url.QueryEscape(testRefreshToken),
+			Path:     "/tokens/self",
+			Domain:   testDomain,
+			HttpOnly: true,
+			Secure:   true,
+			MaxAge:   maxAgeBrowserSession,
+			SameSite: http.SameSiteStrictMode,
+			Raw:      "refresh_token=test-refresh-token; Path=/tokens/self; Domain=www.test.com; HttpOnly; Secure; SameSite=Strict",
+		}
 		rec := httptest.NewRecorder()
 		SetRefreshToken(rec, testRefreshToken, testDomain)
 		cookie := rec.Result().Cookies()[0]
-		So(cookie.Value, ShouldEqual, testRefreshToken)
-		So(cookie.Path, ShouldEqual, "/")
-		So(cookie.Domain, ShouldEqual, testDomain)
-		So(cookie.MaxAge, ShouldEqual, maxAgeBrowserSession)
-		So(cookie.Secure, ShouldBeTrue)
-		So(cookie.SameSite, ShouldEqual, http.SameSiteLaxMode)
+		So(cookie, ShouldResemble, correctCookie)
 	})
 }
-
