@@ -6,7 +6,9 @@ import (
 
 // SetLang sets a cookie containing locale code
 func SetLang(w http.ResponseWriter, lang, domain string) {
-	set(w, localeCookieKey, lang, domain, maxAgeOneYear)
+	path := "/"
+	httpOnly := false
+	set(w, localeCookieKey, lang, domain, path, maxAgeOneYear, http.SameSiteLaxMode, httpOnly)
 }
 
 // GetLang reads lang cookie and returns it's value

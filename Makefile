@@ -12,7 +12,11 @@ test:
 .PHONY: audit
 audit:
 	go list -json -m all | nancy sleuth
-	
-.PHONY: build	
+
+.PHONY: build
 build:
 	go build ./...
+
+.PHONY: lint
+lint:
+	exit

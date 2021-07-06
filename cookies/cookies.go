@@ -21,6 +21,12 @@ const (
 	// florenceCookieKey is the name of cookie set by Florence to store users access token
 	florenceCookieKey = "access_token"
 
+	// idCookieKey is the name of cookie set by Florence to store users id token used for refreshing an access_token
+	idCookieKey = "id_token"
+
+	// idCookieKey is the name of cookie set by Florence to store users refresh token used for refreshing an access_token
+	refreshCookieKey = "refresh_token"
+
 	// collectionIDCookieKey is the name of cookie set by Florence to store currenct active collection
 	collectionIDCookieKey = "collection"
 
@@ -45,17 +51,18 @@ func init() {
 	}
 }
 
-func set(w http.ResponseWriter, name, value, domain string, maxAge int) {
+func set(w http.ResponseWriter, name, value, domain, path string, maxAge int, sameSite http.SameSite, httpOnly bool) {
 	encodedValue := url.QueryEscape(value)
+
 	cookie := &http.Cookie{
 		Name:     name,
 		Value:    encodedValue,
-		Path:     "/",
+		Path:     path,
 		Domain:   domain,
-		HttpOnly: false,
+		HttpOnly: httpOnly,
 		Secure:   isRunningLocalDev,
 		MaxAge:   maxAge,
-		SameSite: http.SameSiteLaxMode,
+		SameSite: sameSite,
 	}
 	http.SetCookie(w, cookie)
 }

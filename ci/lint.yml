@@ -13,4 +13,4 @@ inputs:
     path: dp-cookies
 
 run:
-  path: dp-cookies/ci/scripts/build.sh
+  path: dp-cookies/ci/scripts/lint.sh

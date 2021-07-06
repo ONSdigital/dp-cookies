@@ -6,7 +6,9 @@ import (
 
 // SetCollection sets a cookie containing collection ID
 func SetCollection(w http.ResponseWriter, value, domain string) {
-	set(w, collectionIDCookieKey, value, domain, maxAgeBrowserSession)
+	path := "/"
+	httpOnly := false
+	set(w, collectionIDCookieKey, value, domain, path, maxAgeBrowserSession, http.SameSiteLaxMode, httpOnly)
 }
 
 // GetCollection reads collection_id cookie and returns it's value

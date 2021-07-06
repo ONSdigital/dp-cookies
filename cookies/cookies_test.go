@@ -16,7 +16,7 @@ func TestUnitCookie(t *testing.T) {
 
 	Convey("Set sets correct cookie", t, func() {
 		rec := httptest.NewRecorder()
-		set(rec, testCookie, testValue, testDomain, 12)
+		set(rec, testCookie, testValue, testDomain, "/", 12, http.SameSiteLaxMode, false)
 		cookie := rec.Result().Cookies()[0]
 		So(cookie.Value, ShouldEqual, testValue)
 		So(cookie.Path, ShouldEqual, "/")
