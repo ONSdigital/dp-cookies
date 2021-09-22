@@ -27,6 +27,9 @@ const (
 	// idCookieKey is the name of cookie set by Florence to store users refresh token used for refreshing an access_token
 	refreshCookieKey = "refresh_token"
 
+	// aBTestKey is the name of the cookie set to control a/b tests
+	aBTestKey = "ab_test"
+
 	// collectionIDCookieKey is the name of cookie set by Florence to store currenct active collection
 	collectionIDCookieKey = "collection"
 
@@ -73,4 +76,13 @@ func get(req *http.Request, name string) (string, error) {
 		return "", fmt.Errorf("could not find cookie named '%v'", name)
 	}
 	return cookie.Value, nil
+}
+
+func update(req *http.Request, w http.ResponseWriter, name, value, domain, path string, maxAge int, sameSite http.SameSite, httpOnly bool) {
+	exisitingCookieValue, err := get(req, name)
+	if err != nil {
+		exisitingCookieValue = ""
+	}
+	newValue := exisitingCookieValue + value
+	set(w, name, newValue, domain, path, maxAge, sameSite, httpOnly)
 }
