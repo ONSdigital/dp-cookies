@@ -14,14 +14,15 @@ type ABServices struct {
 }
 
 // SetABTest sets a cookie containing collection ID
-func SetABTest(w http.ResponseWriter, servs ABServices, domain string) {
+func SetABTest(w http.ResponseWriter, servs ABServices, domain string) error {
 	b, err := json.Marshal(servs)
 	if err != nil {
-		b, err = json.Marshal(defaultPolicy)
+		return err
 	}
 	path := "/"
 	httpOnly := false
 	set(w, cookiesPolicyCookieKey, string(b), domain, path, maxAgeOneYear, http.SameSiteLaxMode, httpOnly)
+	return nil
 }
 
 // GetABTest reads ab_test cookie and returns it's value
