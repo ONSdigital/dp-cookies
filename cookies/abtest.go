@@ -38,7 +38,10 @@ func GetABTest(req *http.Request) (ABServices, error) {
 	}
 
 	ABTestServices := ABServices{}
-	json.Unmarshal([]byte(unescapedABTest), &ABTestServices)
+	err = json.Unmarshal([]byte(unescapedABTest), &ABTestServices)
+	if err != nil {
+		return ABServices{}, err
+	}
 	return ABTestServices, nil
 }
 
