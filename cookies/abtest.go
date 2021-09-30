@@ -21,7 +21,7 @@ func SetABTest(w http.ResponseWriter, servs ABServices, domain string) error {
 	}
 	path := "/"
 	httpOnly := false
-	set(w, cookiesPolicyCookieKey, string(b), domain, path, maxAgeOneYear, http.SameSiteLaxMode, httpOnly)
+	set(w, aBTestKey, string(b), domain, path, maxAgeOneYear, http.SameSiteLaxMode, httpOnly)
 	return nil
 }
 
