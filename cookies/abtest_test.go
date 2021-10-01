@@ -36,7 +36,7 @@ func TestUnitABTest(t *testing.T) {
 			req := httptest.NewRequest("GET", "/", nil)
 			cookie, err := GetABTest(req)
 			So(cookie, ShouldResemble, ABServices{})
-			So(err, ShouldNotBeNil)
+			So(err, ShouldEqual, ErrABTestCookieNotFound)
 		})
 	})
 
