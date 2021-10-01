@@ -2,6 +2,7 @@ package cookies
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 	"time"
@@ -12,6 +13,9 @@ type ABServices struct {
 	NewSearch *time.Time `json:"new_search,omitempty"`
 	OldSearch *time.Time `json:"old_search,omitempty"`
 }
+
+// ErrABTestCookieNotFound is used when a/b test cookie isn't found
+var ErrABTestCookieNotFound = errors.New("a/b test cookie not found")
 
 // SetABTest sets a cookie containing collection ID
 func SetABTest(w http.ResponseWriter, servs ABServices, domain string) error {
@@ -29,7 +33,7 @@ func SetABTest(w http.ResponseWriter, servs ABServices, domain string) error {
 func GetABTest(req *http.Request) (ABServices, error) {
 	aBTestCookie, err := req.Cookie(aBTestKey)
 	if err != nil {
-		return ABServices{}, err
+		return ABServices{}, ErrABTestCookieNotFound
 	}
 
 	unescapedABTest, err := url.QueryUnescape(aBTestCookie.Value)
