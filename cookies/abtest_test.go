@@ -81,4 +81,17 @@ func TestUnitABTest(t *testing.T) {
 		cookie := rec.Result().Cookies()[0]
 		So(cookie.Value, ShouldEqual, expectedNewValue)
 	})
+
+	Convey("UpdateSearch updates cookie correctly", t, func() {
+		rec := httptest.NewRecorder()
+		req := httptest.NewRequest("GET", "/", nil)
+		req.AddCookie(&http.Cookie{Name: aBTestKey, Value: testEscapedValue})
+		newValueNewSearch := time.Date(2020, 10, 12, 17, 26, 43, 651387237, time.UTC)
+		newValueOldSearch := time.Date(2021, 10, 12, 14, 22, 45, 651387237, time.UTC)
+		expectedNewValue := "%7B%22new_search%22%3A%222020-10-12T17%3A26%3A43.651387237Z%22%2C%22old_search%22%3A%222021-10-12T14%3A22%3A45.651387237Z%22%7D"
+
+		UpdateSearch(req, rec, newValueNewSearch, newValueOldSearch, testDomain)
+		cookie := rec.Result().Cookies()[0]
+		So(cookie.Value, ShouldEqual, expectedNewValue)
+	})
 }

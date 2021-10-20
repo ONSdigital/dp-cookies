@@ -72,3 +72,17 @@ func UpdateOldSearch(req *http.Request, w http.ResponseWriter, newValue time.Tim
 	SetABTest(w, cookie, domain)
 	return nil
 }
+
+// UpdateSearch updates search values in A/B test cookie
+func UpdateSearch(req *http.Request, w http.ResponseWriter, newSearchValue, oldSearchValue time.Time, domain string) error {
+	cookie, err := GetABTest(req)
+	if err != nil {
+		return err
+	}
+
+	cookie.NewSearch = &newSearchValue
+	cookie.OldSearch = &oldSearchValue
+
+	SetABTest(w, cookie, domain)
+	return nil
+}
