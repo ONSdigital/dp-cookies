@@ -16,6 +16,10 @@ type ABTestCookieAspect struct {
 	Old CookieTime `json:"old,omitempty"`
 }
 
+const (
+	errGettingABTestCookieAspect = "error getting a/b test cookie aspect"
+)
+
 type abTestCookie map[string]ABTestCookieAspect
 
 // ErrABTestCookieNotFound is used when a/b test cookie isn't found
@@ -28,7 +32,7 @@ func GetABTestCookieAspect(req *http.Request, aspectID string) ABTestCookieAspec
 		log.Info(req.Context(), "a/b test cookie not found", log.Data{"aspectID": aspectID})
 		return ABTestCookieAspect{}
 	case err != nil:
-		log.Error(req.Context(), "error getting a/b test cookie aspect", err, log.Data{"aspectID": aspectID})
+		log.Error(req.Context(), errGettingABTestCookieAspect, err, log.Data{"aspectID": aspectID})
 		return ABTestCookieAspect{}
 	}
 
@@ -41,7 +45,7 @@ func SetABTestCookieAspect(w http.ResponseWriter, req *http.Request, aspectID, d
 	case errors.Is(err, ErrABTestCookieNotFound):
 		cookie = make(abTestCookie)
 	case err != nil:
-		log.Error(req.Context(), "error getting a/b test cookie aspect", err, log.Data{"aspectID": aspectID})
+		log.Error(req.Context(), errGettingABTestCookieAspect, err, log.Data{"aspectID": aspectID})
 		return
 	}
 	cookie[aspectID] = aspect
@@ -57,7 +61,7 @@ func RemoveABTestCookieAspect(w http.ResponseWriter, req *http.Request, aspectID
 	case errors.Is(err, ErrABTestCookieNotFound):
 		return
 	case err != nil:
-		log.Error(req.Context(), "error getting a/b test cookie aspect", err, log.Data{"aspectID": aspectID})
+		log.Error(req.Context(), errGettingABTestCookieAspect, err, log.Data{"aspectID": aspectID})
 		return
 	}
 
@@ -88,8 +92,6 @@ func HandleCookieAndServ(w http.ResponseWriter, req *http.Request, n, o http.Han
 	SetABTestCookieAspect(w, req, aspectID, domain, aspect)
 
 	ServABTest(w, req, n, o, aspect)
-
-	return
 }
 
 func HandleABTestExit(w http.ResponseWriter, req *http.Request, o http.Handler, aspectID, domain string) {
@@ -140,12 +142,61 @@ func getABTestCookie(req *http.Request) (abTestCookie, error) {
 var DefaultABTestRandomiser = func(percentage int) Randomiser {
 	return func() ABTestCookieAspect {
 		now := Now()
-		rand.Seed(time.Now().UnixNano())
 
+		//nolint:gosec //does not need to be cryptographically secure
 		if rand.Intn(100) < percentage {
 			return ABTestCookieAspect{New: now.Add(time.Hour * 24), Old: now}
-		} else {
-			return ABTestCookieAspect{New: now, Old: now.Add(time.Hour * 24)}
 		}
+
+		return ABTestCookieAspect{New: now, Old: now.Add(time.Hour * 24)}
 	}
+}
+
+// Handler returns the relevant handler on the basis of the supplied parameters.
+// It delegates to both abTestHandler and abTestPurgeHandler on the basis the abTest parameter, but it is really
+// an encapsulation of the decision-making process as to what handler is used.
+// Important - if AbTest is switched off it returns the new by default - this is to match router functionality.
+func Handler(abTest bool, newHandler, oldHandler http.Handler, percentage int, aspectID, domain, exitNew string) http.HandlerFunc {
+	if abTest {
+		return abTestHandler(newHandler, oldHandler, percentage, aspectID, domain, exitNew)
+	}
+	return abTestPurgeHandler(newHandler, aspectID, domain)
+}
+
+// abTestHandler routes requests to either the old or new handler, for a given aspectID, according to the given percentage
+// i.e. for the given percentage of calls X, X% will be routed to the new handler, and the remainder to the old handler.
+// Most of the functionality is provided by the dp-cookies library, which uses a single ab_test cookie to embed all aspects
+// If the aspect does not exist or has expired, it is created/renewed according to a particular randomiser - in general
+// the DefaultABTestRandomiser in the library is sufficient
+// A well known string - the exitNew string -  can be used as a query parameter to the call, in order to definitively chose
+// the old handler
+func abTestHandler(newHandler, oldHandler http.Handler, percentage int, aspectID, domain, exitNew string) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		now := time.Now().UTC()
+
+		if _, ok := req.URL.Query()[exitNew]; ok {
+			HandleABTestExit(w, req, oldHandler, aspectID, domain)
+			return
+		}
+
+		aspect := GetABTestCookieAspect(req, aspectID)
+
+		if (aspect.New.IsZero() && aspect.Old.IsZero()) || (aspect.New.Before(now) && aspect.Old.Before(now)) {
+			HandleCookieAndServ(w, req, newHandler, oldHandler, aspectID, domain, DefaultABTestRandomiser(percentage))
+			return
+		}
+
+		ServABTest(w, req, newHandler, oldHandler, aspect)
+	})
+}
+
+// abTestPurgeHandler is used to remove a given AspectID from the single ab_test cookie handled by the dp-cookies library
+// It is useful when AB Testing for a particular aspect has finished, but the aspect is still embedded in client's ab_test
+// cookie - this handler will remove the aspect and can be left in use for several weeks after testing has finished to 'clean'
+// the underlying ab_test cookie
+func abTestPurgeHandler(newHandler http.Handler, aspectID, domain string) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		RemoveABTestCookieAspect(w, req, aspectID, domain)
+		newHandler.ServeHTTP(w, req)
+	})
 }
