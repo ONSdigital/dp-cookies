@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 )
 
 // PreferencesResponse is a combination of cookie policy and whether they have be set by user
@@ -66,6 +67,17 @@ func SetPolicy(w http.ResponseWriter, policy Policy, domain string) {
 	set(w, cookiesPolicyCookieKey, string(b), domain, path, maxAgeOneYear, http.SameSiteLaxMode, httpOnly)
 }
 
+// SetONSPolicy sets the ONS cookie with the users preferences, or sets default preferences on error
+func SetONSPolicy(w http.ResponseWriter, policy ONSPolicy, domain string) {
+	b, err := json.Marshal(policy)
+	if err != nil {
+		b, _ = json.Marshal(defaultONSPolicy)
+	}
+	path := "/"
+	httpOnly := false
+	setCookieWithUnencodedValue(w, onsCookiePolicyCookieKey, string(b), domain, path, maxAgeOneYear, http.SameSiteLaxMode, httpOnly)
+}
+
 func getPolicy(req *http.Request) Policy {
 	cookiePolicyCookie, err := req.Cookie(cookiesPolicyCookieKey)
 	if err != nil {
@@ -79,5 +91,24 @@ func getPolicy(req *http.Request) Policy {
 
 	cookiePolicy := Policy{}
 	json.Unmarshal([]byte(unescapedPolicy), &cookiePolicy)
+	return cookiePolicy
+}
+
+func getONSPolicy(req *http.Request) ONSPolicy {
+	cookiePolicyCookie, err := req.Cookie(onsCookiePolicyCookieKey)
+	if err != nil {
+		return defaultONSPolicy
+	}
+
+	unescapedPolicy, err := url.QueryUnescape(cookiePolicyCookie.Value)
+	if err != nil {
+		return defaultONSPolicy
+	}
+
+	// Replace single quotes with double quotes to make it valid JSON
+	validJSONPolicy := strings.ReplaceAll(unescapedPolicy, "'", "\"")
+
+	cookiePolicy := ONSPolicy{}
+	json.Unmarshal([]byte(validJSONPolicy), &cookiePolicy)
 	return cookiePolicy
 }

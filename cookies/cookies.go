@@ -10,10 +10,20 @@ import (
 
 const (
 	// cookiesPolicyCookieKey is the  name of cookie used to determine the user selected cookie preferences
+	//
+	// Deprecated: cookiesPolicyCookieKey should only be used for maintaining legacy systems. Use onsCookiesPolicyCookieKey instead.
 	cookiesPolicyCookieKey = "cookies_policy"
 
+	// onsCookiePolicyCookieKey is the name of cookie used to determine the user selected ONS cookie preferences
+	onsCookiePolicyCookieKey = "ons_cookie_policy"
+
 	// cookiesPreferencesSetCookieKey is the name of cookie set once a user has made a choice preference decision
+	//
+	// Deprecated: cookiesPreferencesSetCookieKey should only be used for maintaining legacy systems. Use onsCookiesPreferencesSetCookieKey instead.
 	cookiesPreferencesSetCookieKey = "cookies_preferences_set"
+
+	// onsCookiePreferencesSetCookieKey is the name of cookie set once a user has made a choice preference decision
+	onsCookiePreferencesSetCookieKey = "ons_cookie_message_displayed"
 
 	// localeCookieKey is the name of cookie with user choosen language of website
 	localeCookieKey = "lang"
