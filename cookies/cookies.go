@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -70,6 +71,23 @@ func set(w http.ResponseWriter, name, value, domain, path string, maxAge int, sa
 	cookie := &http.Cookie{
 		Name:     name,
 		Value:    encodedValue,
+		Path:     path,
+		Domain:   domain,
+		HttpOnly: httpOnly,
+		Secure:   isRunningLocalDev,
+		MaxAge:   maxAge,
+		SameSite: sameSite,
+	}
+	http.SetCookie(w, cookie)
+}
+
+// setUnencoded sets a cookie with the value not encoded
+func setUnencoded(w http.ResponseWriter, name, value, domain, path string, maxAge int, sameSite http.SameSite, httpOnly bool) {
+	convertedValue := strings.ReplaceAll(value, "\"", "'")
+
+	cookie := &http.Cookie{
+		Name:     name,
+		Value:    convertedValue,
 		Path:     path,
 		Domain:   domain,
 		HttpOnly: httpOnly,
