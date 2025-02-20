@@ -81,8 +81,8 @@ func set(w http.ResponseWriter, name, value, domain, path string, maxAge int, sa
 	http.SetCookie(w, cookie)
 }
 
-// setUnencoded sets a cookie with the value not encoded
-func setUnencoded(w http.ResponseWriter, name, value, domain, path string, maxAge int, sameSite http.SameSite, httpOnly bool) {
+// setCookieWithUnencodedValue sets a cookie with the value not encoded
+func setCookieWithUnencodedValue(w http.ResponseWriter, name, value, domain, path string, maxAge int, sameSite http.SameSite, httpOnly bool) {
 	convertedValue := strings.ReplaceAll(value, "\"", "'")
 
 	cookie := &http.Cookie{
@@ -95,7 +95,14 @@ func setUnencoded(w http.ResponseWriter, name, value, domain, path string, maxAg
 		MaxAge:   maxAge,
 		SameSite: sameSite,
 	}
-	http.SetCookie(w, cookie)
+
+	// not using http.SetCookie as it adds quotes around the value if there is a comma within the value
+	// https://github.com/golang/go/blob/9b842e2e63b660dd5e9ac39bac58a578d7b69824/src/net/http/cookie.go#L465 (line 465)
+	cookieStr := cookie.String()
+	// strips quotes from a value that surround {} once which should be the value as that's how cookie.String() is constructed
+	cookieStr = strings.Replace(cookieStr, "\"{", "{", 1)
+	cookieStr = strings.Replace(cookieStr, "}\"", "}", 1)
+	w.Header().Add("Set-Cookie", cookieStr)
 }
 
 func get(req *http.Request, name string) (string, error) {
