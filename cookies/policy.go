@@ -67,6 +67,8 @@ func GetONSCookiePreferences(req *http.Request) ONSPreferencesResponse {
 }
 
 // SetPreferenceIsSet sets a cookie to record a user has set cookie preferences
+//
+// Deprecated: Use SetONSPreferenceIsSet instead
 func SetPreferenceIsSet(w http.ResponseWriter, domain string) {
 	path := "/"
 	httpOnly := false
@@ -109,6 +111,8 @@ func getONSPreferencesIsSet(req *http.Request) bool {
 }
 
 // SetPolicy sets a cookie with the users preferences, or sets default preferences on error
+//
+// Deprecated: Use SetONSPolicy instead
 func SetPolicy(w http.ResponseWriter, policy Policy, domain string) {
 	b, err := json.Marshal(policy)
 	if err != nil {
