@@ -132,7 +132,6 @@ func TestSetABTestCookieAspect(t *testing.T) {
 				So(cookieSetInResponse.SameSite, ShouldEqual, http.SameSiteLaxMode)
 			})
 		})
-
 	})
 }
 

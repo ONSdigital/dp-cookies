@@ -10,13 +10,12 @@ import (
 )
 
 func TestUnitPolicy(t *testing.T) {
-
 	var testDomain = "www.test.com"
 	var testEncodedCookieValue = "%7B%22essential%22%3Atrue%2C%22usage%22%3Atrue%7D"
 
 	Convey("GetCookiePreferences", t, func() {
 		Convey("returns false for prefrences set if cookie isn't set, and default policy if no cookies set", func() {
-			req := httptest.NewRequest("GET", "/", nil)
+			req := httptest.NewRequest("GET", "/", http.NoBody)
 			cookie := GetCookiePreferences(req)
 			So(cookie, ShouldResemble, PreferencesResponse{
 				IsPreferenceSet: false,
@@ -28,7 +27,7 @@ func TestUnitPolicy(t *testing.T) {
 		})
 
 		Convey("returns true for prefrences set if cookie is set, and default policy if no cookies set", func() {
-			req := httptest.NewRequest("GET", "/", nil)
+			req := httptest.NewRequest("GET", "/", http.NoBody)
 			req.AddCookie(&http.Cookie{Name: cookiesPreferencesSetCookieKey, Value: "true"})
 			cookie := GetCookiePreferences(req)
 			So(cookie, ShouldResemble, PreferencesResponse{
@@ -41,7 +40,7 @@ func TestUnitPolicy(t *testing.T) {
 		})
 
 		Convey("returns true for prefrences set if cookie is set, and correct policy if cookie set", func() {
-			req := httptest.NewRequest("GET", "/", nil)
+			req := httptest.NewRequest("GET", "/", http.NoBody)
 			req.AddCookie(&http.Cookie{Name: cookiesPreferencesSetCookieKey, Value: "true"})
 			req.AddCookie(&http.Cookie{Name: cookiesPolicyCookieKey, Value: testEncodedCookieValue})
 			cookie := GetCookiePreferences(req)
@@ -83,7 +82,7 @@ func TestUnitPolicy(t *testing.T) {
 func TestUnitONSPolicy(t *testing.T) {
 	Convey("GetONSCookiePreferences", t, func() {
 		Convey("returns false for preferences set if cookie isn't set, and default policy if no cookies set", func() {
-			req := httptest.NewRequest("GET", "/", nil)
+			req := httptest.NewRequest("GET", "/", http.NoBody)
 			cookie := GetONSCookiePreferences(req)
 			So(cookie, ShouldResemble, ONSPreferencesResponse{
 				IsPreferenceSet: false,
@@ -97,7 +96,7 @@ func TestUnitONSPolicy(t *testing.T) {
 		})
 
 		Convey("returns true for preferences set if cookie is set, and default policy if no cookies set", func() {
-			req := httptest.NewRequest("GET", "/", nil)
+			req := httptest.NewRequest("GET", "/", http.NoBody)
 			req.AddCookie(&http.Cookie{Name: onsCookiePreferencesSetCookieKey, Value: "true"})
 			cookie := GetONSCookiePreferences(req)
 			So(cookie, ShouldResemble, ONSPreferencesResponse{
@@ -171,7 +170,7 @@ func TestUnitONSPolicy(t *testing.T) {
 		Convey("returns true for preference set if cookie is set, and matches preferences", func() {
 			for _, t := range tc {
 				Convey(fmt.Sprintf("when %s", t.scenario), func() {
-					req := httptest.NewRequest("GET", "/", nil)
+					req := httptest.NewRequest("GET", "/", http.NoBody)
 					req.AddCookie(&http.Cookie{Name: onsCookiePreferencesSetCookieKey, Value: "true"})
 					req.AddCookie(&http.Cookie{Name: onsCookiePolicyCookieKey, Value: t.given})
 					cookie := GetONSCookiePreferences(req)

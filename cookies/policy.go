@@ -146,7 +146,11 @@ func getPolicy(req *http.Request) Policy {
 	}
 
 	cookiePolicy := Policy{}
-	json.Unmarshal([]byte(unescapedPolicy), &cookiePolicy)
+	jErr := json.Unmarshal([]byte(unescapedPolicy), &cookiePolicy)
+	if jErr != nil {
+		return defaultPolicy
+	}
+
 	return cookiePolicy
 }
 
@@ -165,6 +169,10 @@ func getONSPolicy(req *http.Request) ONSPolicy {
 	validJSONPolicy := strings.ReplaceAll(unescapedPolicy, "'", "\"")
 
 	cookiePolicy := ONSPolicy{}
-	json.Unmarshal([]byte(validJSONPolicy), &cookiePolicy)
+	jErr := json.Unmarshal([]byte(validJSONPolicy), &cookiePolicy)
+	if jErr != nil {
+		return defaultONSPolicy
+	}
+
 	return cookiePolicy
 }

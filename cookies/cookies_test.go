@@ -53,14 +53,14 @@ func TestUnitCookie(t *testing.T) {
 
 	Convey("Get", t, func() {
 		Convey("returns cookie value if value is set", func() {
-			req := httptest.NewRequest("GET", "/", nil)
+			req := httptest.NewRequest("GET", "/", http.NoBody)
 			req.AddCookie(&http.Cookie{Name: "test-cookie", Value: "test-value"})
 			cookie, _ := get(req, "test-cookie")
 			So(cookie, ShouldEqual, "test-value")
 		})
 
 		Convey("returns error if no cookie is set", func() {
-			req := httptest.NewRequest("GET", "/", nil)
+			req := httptest.NewRequest("GET", "/", http.NoBody)
 			_, err := GetLang(req)
 			So(err, ShouldNotBeNil)
 		})

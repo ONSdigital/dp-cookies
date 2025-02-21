@@ -10,20 +10,19 @@ import (
 )
 
 func TestUnitUserToken(t *testing.T) {
-
 	var testDomain = "www.test.com"
 	var testAccessToken = "test-access-token"
 
 	Convey("GetUserAuthToken", t, func() {
 		Convey("returns cookie value if value is set", func() {
-			req := httptest.NewRequest("GET", "/", nil)
+			req := httptest.NewRequest("GET", "/", http.NoBody)
 			req.AddCookie(&http.Cookie{Name: florenceCookieKey, Value: testAccessToken})
 			cookie, _ := GetUserAuthToken(req)
 			So(cookie, ShouldEqual, testAccessToken)
 		})
 
 		Convey("returns error if no cookie is set", func() {
-			req := httptest.NewRequest("GET", "/", nil)
+			req := httptest.NewRequest("GET", "/", http.NoBody)
 			_, err := GetUserAuthToken(req)
 			So(err, ShouldNotBeNil)
 		})

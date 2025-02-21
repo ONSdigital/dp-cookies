@@ -9,20 +9,19 @@ import (
 )
 
 func TestUnitLocale(t *testing.T) {
-
 	var testDomain = "www.test.com"
 	var testLang = "en"
 
 	Convey("GetLang", t, func() {
 		Convey("returns cookie value if value is set", func() {
-			req := httptest.NewRequest("GET", "/", nil)
+			req := httptest.NewRequest("GET", "/", http.NoBody)
 			req.AddCookie(&http.Cookie{Name: localeCookieKey, Value: testLang})
 			cookie, _ := GetLang(req)
 			So(cookie, ShouldEqual, testLang)
 		})
 
 		Convey("returns error if no cookie is set", func() {
-			req := httptest.NewRequest("GET", "/", nil)
+			req := httptest.NewRequest("GET", "/", http.NoBody)
 			_, err := GetLang(req)
 			So(err, ShouldNotBeNil)
 		})

@@ -10,20 +10,19 @@ import (
 )
 
 func TestUnitIDToken(t *testing.T) {
-
 	var testDomain = "www.test.com"
 	var testIDToken = "test-id-token"
 
 	Convey("GetIDToken", t, func() {
 		Convey("returns cookie value if value is set", func() {
-			req := httptest.NewRequest("GET", "/", nil)
+			req := httptest.NewRequest("GET", "/", http.NoBody)
 			req.AddCookie(&http.Cookie{Name: idCookieKey, Value: testIDToken})
 			cookie, _ := GetIDToken(req)
 			So(cookie, ShouldEqual, testIDToken)
 		})
 
 		Convey("returns error if no cookie is set", func() {
-			req := httptest.NewRequest("GET", "/", nil)
+			req := httptest.NewRequest("GET", "/", http.NoBody)
 			_, err := GetIDToken(req)
 			So(err, ShouldNotBeNil)
 		})

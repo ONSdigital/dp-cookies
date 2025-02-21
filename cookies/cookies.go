@@ -53,7 +53,7 @@ const (
 
 var isRunningLocalDev bool
 
-func init() {
+func init() { //nolint:gochecknoinits // init() is used for local/ci testing only
 	// Set a LIBRARY_TEST environment variable to TRUE when running locally or testing.
 	// Concourse test will run 'make debug' which includes setting this variable automatically.
 	// Note, this is required as we don't have the means to test secure cookies.
@@ -111,13 +111,4 @@ func get(req *http.Request, name string) (string, error) {
 		return "", fmt.Errorf("could not find cookie named '%v'", name)
 	}
 	return cookie.Value, nil
-}
-
-func update(req *http.Request, w http.ResponseWriter, name, value, domain, path string, maxAge int, sameSite http.SameSite, httpOnly bool) {
-	exisitingCookieValue, err := get(req, name)
-	if err != nil {
-		exisitingCookieValue = ""
-	}
-	newValue := exisitingCookieValue + value
-	set(w, name, newValue, domain, path, maxAge, sameSite, httpOnly)
 }
