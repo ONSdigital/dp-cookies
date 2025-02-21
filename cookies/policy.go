@@ -131,7 +131,7 @@ func SetONSPolicy(w http.ResponseWriter, policy ONSPolicy, domain string) {
 	}
 	path := "/"
 	httpOnly := false
-	setUnencoded(w, onsCookiePolicyCookieKey, string(b), domain, path, maxAgeOneYear, http.SameSiteLaxMode, httpOnly)
+	setCookieWithUnencodedValue(w, onsCookiePolicyCookieKey, string(b), domain, path, maxAgeOneYear, http.SameSiteLaxMode, httpOnly)
 }
 
 func getPolicy(req *http.Request) Policy {
