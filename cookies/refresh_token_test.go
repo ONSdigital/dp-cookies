@@ -33,13 +33,13 @@ func TestUnitRefreshToken(t *testing.T) {
 		correctCookie := &http.Cookie{
 			Name:     "refresh_token",
 			Value:    url.QueryEscape(testRefreshToken),
-			Path:     "/tokens/self",
+			Path:     "/api/v1/tokens/self",
 			Domain:   testDomain,
 			HttpOnly: true,
 			Secure:   true,
 			MaxAge:   maxAgeBrowserSession,
 			SameSite: http.SameSiteStrictMode,
-			Raw:      "refresh_token=test-refresh-token; Path=/tokens/self; Domain=www.test.com; HttpOnly; Secure; SameSite=Strict",
+			Raw:      "refresh_token=test-refresh-token; Path=/api/v1/tokens/self; Domain=www.test.com; HttpOnly; Secure; SameSite=Strict",
 		}
 		rec := httptest.NewRecorder()
 		SetRefreshToken(rec, testRefreshToken, testDomain)
