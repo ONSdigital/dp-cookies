@@ -6,7 +6,7 @@ import (
 
 // SetRefreshToken sets a cookie containing users refresh token ("refresh_token")
 func SetRefreshToken(w http.ResponseWriter, refreshToken, domain string) {
-	path := "/tokens/self"
+	path := "/api/v1/tokens/self"
 	httpOnly := true
 	set(w, refreshCookieKey, refreshToken, domain, path, maxAgeBrowserSession, http.SameSiteStrictMode, httpOnly)
 }
