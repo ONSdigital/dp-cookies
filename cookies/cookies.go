@@ -68,7 +68,7 @@ func init() { //nolint:gochecknoinits // init() is used for local/ci testing onl
 func set(w http.ResponseWriter, name, value, domain, path string, maxAge int, sameSite http.SameSite, httpOnly bool) {
 	encodedValue := url.QueryEscape(value)
 
-	cookie := &http.Cookie{
+	cookie := &http.Cookie{ //nolint:gosec // G124 - HttpOnly and SameSite are set by upstream services, Secure follows local dev setting
 		Name:     name,
 		Value:    encodedValue,
 		Path:     path,
@@ -85,7 +85,7 @@ func set(w http.ResponseWriter, name, value, domain, path string, maxAge int, sa
 func setCookieWithUnencodedValue(w http.ResponseWriter, name, value, domain, path string, maxAge int, sameSite http.SameSite, httpOnly bool) {
 	convertedValue := strings.ReplaceAll(value, "\"", "'")
 
-	cookie := &http.Cookie{
+	cookie := &http.Cookie{ //nolint:gosec // G124 - HttpOnly and SameSite are set by upstream services, Secure follows local dev setting
 		Name:     name,
 		Value:    convertedValue,
 		Path:     path,

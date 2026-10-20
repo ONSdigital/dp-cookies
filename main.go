@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html"
 	"net/http"
 
 	"github.com/ONSdigital/dp-cookies/cookies"
@@ -36,13 +37,13 @@ func main() {
 		cookiesResponse := cookies.GetCookiePreferences(r)
 		onsCookiesResponse := cookies.GetONSCookiePreferences(r)
 
-		_, err := fmt.Fprintf(w, "%+v \n", cookiesResponse)
+		_, err := fmt.Fprint(w, html.EscapeString(fmt.Sprintf("%+v \n", cookiesResponse)))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		_, wErr := fmt.Fprintf(w, "%+v \n", onsCookiesResponse)
+		_, wErr := fmt.Fprint(w, html.EscapeString(fmt.Sprintf("%+v \n", onsCookiesResponse)))
 		if wErr != nil {
 			http.Error(w, wErr.Error(), http.StatusInternalServerError)
 			return
@@ -56,7 +57,7 @@ func main() {
 			return
 		}
 
-		_, wErr := fmt.Fprintf(w, "%+v \n", cookiesResponse)
+		_, wErr := fmt.Fprint(w, html.EscapeString(fmt.Sprintf("%+v \n", cookiesResponse)))
 		if wErr != nil {
 			http.Error(w, wErr.Error(), http.StatusInternalServerError)
 			return
@@ -70,7 +71,7 @@ func main() {
 			return
 		}
 
-		_, wErr := fmt.Fprintf(w, "%+v \n", cookiesResponse)
+		_, wErr := fmt.Fprint(w, html.EscapeString(fmt.Sprintf("%+v \n", cookiesResponse)))
 		if wErr != nil {
 			http.Error(w, wErr.Error(), http.StatusInternalServerError)
 			return
@@ -84,7 +85,7 @@ func main() {
 			return
 		}
 
-		_, wErr := fmt.Fprintf(w, "%+v \n", cookiesResponse)
+		_, wErr := fmt.Fprint(w, html.EscapeString(fmt.Sprintf("%+v \n", cookiesResponse)))
 		if wErr != nil {
 			http.Error(w, wErr.Error(), http.StatusInternalServerError)
 			return

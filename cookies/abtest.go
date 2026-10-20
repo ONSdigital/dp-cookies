@@ -23,16 +23,19 @@ const (
 type abTestCookie map[string]ABTestCookieAspect
 
 // ErrABTestCookieNotFound is used when a/b test cookie isn't found
-var ErrABTestCookieNotFound = errors.New("a/b test cookie not found")
+var (
+	ErrABTestCookieNotFound = errors.New("a/b test cookie not found")
+	aspectIDKey             = "aspectID"
+)
 
 func GetABTestCookieAspect(req *http.Request, aspectID string) ABTestCookieAspect {
 	aBTestCookie, err := getABTestCookie(req)
 	switch {
 	case errors.Is(err, ErrABTestCookieNotFound):
-		log.Info(req.Context(), "a/b test cookie not found", log.Data{"aspectID": aspectID})
+		log.Info(req.Context(), "a/b test cookie not found", log.Data{aspectIDKey: aspectID})
 		return ABTestCookieAspect{}
 	case err != nil:
-		log.Error(req.Context(), errGettingABTestCookieAspect, err, log.Data{"aspectID": aspectID})
+		log.Error(req.Context(), errGettingABTestCookieAspect, err, log.Data{aspectIDKey: aspectID})
 		return ABTestCookieAspect{}
 	}
 
@@ -45,13 +48,13 @@ func SetABTestCookieAspect(w http.ResponseWriter, req *http.Request, aspectID, d
 	case errors.Is(err, ErrABTestCookieNotFound):
 		cookie = make(abTestCookie)
 	case err != nil:
-		log.Error(req.Context(), errGettingABTestCookieAspect, err, log.Data{"aspectID": aspectID})
+		log.Error(req.Context(), errGettingABTestCookieAspect, err, log.Data{aspectIDKey: aspectID})
 		return
 	}
 	cookie[aspectID] = aspect
 
 	if err = setABTestCookie(w, cookie, domain); err != nil {
-		log.Error(req.Context(), "error updating a/b test cookie aspect", err, log.Data{"aspectID": aspectID, "aspect": aspect})
+		log.Error(req.Context(), "error updating a/b test cookie aspect", err, log.Data{aspectIDKey: aspectID, "aspect": aspect})
 	}
 }
 
@@ -61,14 +64,14 @@ func RemoveABTestCookieAspect(w http.ResponseWriter, req *http.Request, aspectID
 	case errors.Is(err, ErrABTestCookieNotFound):
 		return
 	case err != nil:
-		log.Error(req.Context(), errGettingABTestCookieAspect, err, log.Data{"aspectID": aspectID})
+		log.Error(req.Context(), errGettingABTestCookieAspect, err, log.Data{aspectIDKey: aspectID})
 		return
 	}
 
 	delete(cookie, aspectID)
 
 	if err = setABTestCookie(w, cookie, domain); err != nil {
-		log.Error(req.Context(), "error removing a/b test cookie aspect", err, log.Data{"aspectID": aspectID})
+		log.Error(req.Context(), "error removing a/b test cookie aspect", err, log.Data{aspectIDKey: aspectID})
 	}
 }
 
